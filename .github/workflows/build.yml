@@ -1,14 +1,17 @@
-name: Build Vello-D
+name: Build and Release Vello-D
 
 on:
   push:
     branches: [ main, master ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
 
 jobs:
   build-windows:
     runs-on: windows-latest
+    permissions:
+      contents: write
     
     steps:
     - uses: actions/checkout@v4
@@ -36,3 +39,34 @@ jobs:
         dub build -c simple
         dub build -c multi
         dub build -c threaded
+
+    - name: Prepare Release Artifacts
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        mkdir artifacts
+        # Copy DLL
+        cp vello_bridge/target/release/vello_bridge.dll artifacts/
+        # Copy Demos
+        cp demos/vello_d_demos.exe artifacts/
+        # Zip them (Optional but good)
+        Compress-Archive -Path artifacts/* -DestinationPath vello-d-windows-x64.zip
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          vello-d-windows-x64.zip
+          artifacts/vello_bridge.dll
+          artifacts/vello_d_demos.exe
+        body: |
+          ## Vello-D Release ${{ github.ref_name }}
+          
+          This release contains the pre-compiled Vello-D bridge and demo binaries for Windows x64.
+          
+          ### Included Artifacts:
+          - `vello_bridge.dll`: The primary FFI bridge between Dlang and Rust Vello.
+          - `vello_d_demos.exe`: The multi-threaded, multi-backend demo executable.
+          
+          ### Installation:
+          Place `vello_bridge.dll` in your application's executable directory or system path.
