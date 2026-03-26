@@ -20,5 +20,5 @@ vello_bridge/Cargo.lock
 
 # Misc
 *.log
-tests/build_err.txt
+demos/build_err.txt
 MEMORIES.md

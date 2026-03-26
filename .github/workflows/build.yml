@@ -32,7 +32,7 @@ jobs:
 
     - name: Build Demo suite (Dlang)
       run: |
-        cd tests
+        cd demos
         dub build -c simple
         dub build -c multi
         dub build -c threaded
