@@ -1,0 +1,21 @@
+name "vello-d"
+description "Dlang bindings for Vello vector graphics"
+authors "amdphreak"
+copyright "Copyright © 2026, amdphreak"
+license "MIT"
+
+targetType "library"
+targetName "vello_d"
+
+// Build the Rust bridge before compiling D code
+// Using powershell explicitly for a cleaner cross-platform command
+preBuildCommands "powershell -NoProfile -Command \"cd vello_bridge; cargo build --release\""
+
+// Windows/MSVC specific linking
+lflags "/LIBPATH:vello_bridge/target/release"
+libs "vello_bridge"
+libs "advapi32" "userenv" "ws2_32" "bcrypt" "ntdll"
+
+// Export shared source and import paths
+importPaths "source"
+sourcePaths "source"

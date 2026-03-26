@@ -1,0 +1,28 @@
+{
+    "name": "vello_d_test",
+    "targetType": "executable",
+    "targetName": "vello_d_test",
+    "dependencies": {
+        "vello-d": { "path": ".." },
+        "glfw-d": "~>1.1.2"
+    },
+    "configurations": [
+        {
+            "name": "simple",
+            "targetType": "executable",
+            "mainSourceFile": "source/app.d"
+        },
+        {
+            "name": "multi",
+            "targetType": "executable",
+            "mainSourceFile": "source/multi_backend.d"
+        },
+        {
+            "name": "threaded",
+            "targetType": "executable",
+            "mainSourceFile": "source/threaded_backend.d"
+        }
+    ],
+    "lflags": ["/LIBPATH:../vello_bridge/target/release"],
+    "libs": ["vello_bridge"]
+}

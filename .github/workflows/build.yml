@@ -1,0 +1,38 @@
+name: Build Vello-D
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+      
+    - name: Set up Dlang (LDC)
+      uses: dlang-community/setup-dlang@v1
+      with:
+        compiler: ldc-latest
+
+    - name: Build vello_bridge (Rust)
+      run: |
+        cd vello_bridge
+        cargo build --release
+        
+    - name: Build vello-d (Dlang Library)
+      run: |
+        dub build
+
+    - name: Build Demo suite (Dlang)
+      run: |
+        cd tests
+        dub build -c simple
+        dub build -c multi
+        dub build -c threaded

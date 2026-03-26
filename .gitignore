@@ -1,0 +1,24 @@
+# Dlang
+.dub/
+docs/
+*.exe
+*.dll
+*.lib
+*.obj
+*.pdb
+*.exp
+
+# Rust
+vello_bridge/target/
+vello_bridge/Cargo.lock
+
+# Editor-specific
+.idea/
+.vscode/
+*.swp
+*.bak
+
+# Misc
+*.log
+tests/build_err.txt
+MEMORIES.md

@@ -1,0 +1,7 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"glfw-d": "1.1.2",
+		"vello-d": {"path":"../"}
+	}
+}
