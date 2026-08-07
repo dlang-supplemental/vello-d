@@ -1,16 +1,18 @@
 <a id="readme-top"></a>
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-
 <div align="center">
-  <h1>vello-d</h1>
-  <p>High-performance, GPU-accelerated 2D vector graphics for Dlang, powered by Vello (Rust).</p>
-  <p>
+  <a href="https://github.com/dlang-supplemental/vello-d/graphs/contributors"><img src="https://img.shields.io/github/contributors/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Contributors"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/network/members"><img src="https://img.shields.io/github/forks/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Forks"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/stargazers"><img src="https://img.shields.io/github/stars/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Stargazers"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/issues"><img src="https://img.shields.io/github/issues/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Issues"></a>
+
+  <h1 align="center">vello-d</h1>
+
+  <p align="center">
+    High-performance, GPU-accelerated 2D vector graphics for Dlang, powered by Vello (Rust).
+    <br />
+    <br />
     <a href="https://github.com/dlang-supplemental/vello-d/issues">Report Bug</a>
-    ·
+    &middot;
     <a href="https://github.com/dlang-supplemental/vello-d/issues">Request Feature</a>
   </p>
 </div>
@@ -80,12 +82,3 @@ Site: https://dlang-supplemental.github.io
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/dlang-supplemental/vello-d.svg?style=for-the-badge
-[contributors-url]: https://github.com/dlang-supplemental/vello-d/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/dlang-supplemental/vello-d.svg?style=for-the-badge
-[forks-url]: https://github.com/dlang-supplemental/vello-d/network/members
-[stars-shield]: https://img.shields.io/github/stars/dlang-supplemental/vello-d.svg?style=for-the-badge
-[stars-url]: https://github.com/dlang-supplemental/vello-d/stargazers
-[issues-shield]: https://img.shields.io/github/issues/dlang-supplemental/vello-d.svg?style=for-the-badge
-[issues-url]: https://github.com/dlang-supplemental/vello-d/issues
