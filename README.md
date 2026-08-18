@@ -34,9 +34,15 @@ Install: `dub add vello-d` (after building the Rust bridge below).
 ### Key Features
 
 - **GPU Backends**: Native support for **Vulkan** and **DX12** via `wgpu`.
+- **Surfaces**: Windows `HWND`, X11 (`Display*` + window id), Wayland (`wl_display*` + `wl_surface*`).
+- **Scene API**: fills, strokes, rounded rects, circles, Bézier paths, clip layers, linear/radial gradients, RGBA8 images, TrueType glyph runs.
 - **Multi-Window Rendering**: Create multiple windows running on different GPU backends within a single process.
 - **Threaded Rendering**: Support for decoupled background rendering to bypass the Win32 main-loop move/resize blocking issue.
 - **RAII Bindings**: Ergonomic Dlang wrappers for Vello's scene and context management.
+
+## Changelog
+
+See [CHANGELOG.adoc](CHANGELOG.adoc).
 
 ## Getting Started
 

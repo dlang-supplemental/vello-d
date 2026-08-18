@@ -1,0 +1,11 @@
+= Changelog
+
+== 2026-08-18 — Outline glyph runs, wgpu 24 adapter Result
+
+C ABI `vello_scene_draw_glyphs` records a TrueType glyph run (`FontData` blob + `vello::Glyph` x/y offsets). D wrapper: `Scene.drawGlyphs`. `request_adapter` matches wgpu 24 (`Result` instead of `Option`). `draw_image` passes `ImageBrush` by reference as required by Vello 0.8.
+
+== 2026-08-17 — Scene API, Linux surfaces
+
+Added path/stroke/clip/gradient/image recording on the Rust C ABI, plus X11 and Wayland `wgpu` surface constructors. HWND creation still works; missing platform constructors return null.
+
+See `README.md` for the D wrappers (`Scene.fillRoundedRect`, `Context.forX11`, …).
