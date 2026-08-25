@@ -189,7 +189,24 @@ class Scene {
             fontSize, tx, ty, r, g, b, a, glyphs.ptr, glyphs.length);
     }
 
+    /// UTF-8 LTR text via skrifa cmap; returns advance width in pixels.
+    float drawText(const(ubyte)[] fontBytes, uint fontIndex, float fontSize,
+            double tx, double ty, ubyte r, ubyte g, ubyte b, ubyte a, const(char)[] text) {
+        if (!fontBytes.length || !text.length)
+            return 0;
+        return vello_scene_draw_text(_handle, fontBytes.ptr, fontBytes.length, fontIndex,
+            fontSize, tx, ty, r, g, b, a, cast(const(ubyte)*) text.ptr, text.length);
+    }
+
     @property VelloScene* handle() { return _handle; }
+}
+
+/// Measure UTF-8 advance width without a scene.
+float measureText(const(ubyte)[] fontBytes, uint fontIndex, float fontSize, const(char)[] text) {
+    if (!fontBytes.length || !text.length)
+        return 0;
+    return vello_measure_text(fontBytes.ptr, fontBytes.length, fontIndex, fontSize,
+        cast(const(ubyte)*) text.ptr, text.length);
 }
 
 void initVello() {

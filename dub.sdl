@@ -3,8 +3,8 @@ description "Dlang bindings for Vello vector graphics"
 authors "amdphreak"
 copyright "Copyright © 2026, amdphreak"
 license "MIT"
-// After API stabilizes: dub publish (https://github.com/dlang-supplemental/vello-d)
-// Consumers until then: "vello-d": { "path": "../vello-d" } or git+https://github.com/dlang-supplemental/vello-d.git
+version "0.1.4"
+# Keep in sync with git tag v0.1.4. Publish to code.dlang.org after tagging.
 
 targetType "library"
 targetName "vello_d"

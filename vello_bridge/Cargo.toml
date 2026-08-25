@@ -8,6 +8,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 vello = "0.8"
+skrifa = "0.40"
 log = "0.4"
 env_logger = "0.11"
 raw-window-handle = "0.6"
