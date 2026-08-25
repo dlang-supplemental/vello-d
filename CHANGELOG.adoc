@@ -1,5 +1,7 @@
 = Changelog
 
+Detailed entries live in the https://dlang-supplemental.github.io/docs/vello-d/changelog.html[Antora changelog index].
+
 == 2026-08-25 — UTF-8 draw_text / measure_text (0.1.4)
 
 C ABI `vello_scene_draw_text` and `vello_measure_text` shape LTR UTF-8 via skrifa cmap + advances, then record outline glyphs. D wrappers: `Scene.drawText`, `measureText`. Package version `0.1.4`.
@@ -12,4 +14,4 @@ C ABI `vello_scene_draw_glyphs` records a TrueType glyph run (`FontData` blob + 
 
 Added path/stroke/clip/gradient/image recording on the Rust C ABI, plus X11 and Wayland `wgpu` surface constructors. HWND creation still works; missing platform constructors return null.
 
-See `README.md` for the D wrappers (`Scene.fillRoundedRect`, `Context.forX11`, …).
+See xref:docs/modules/ROOT/pages/scene-api.adoc[Scene API] in the Antora component for the D wrappers (`Scene.fillRoundedRect`, `Context.forX11`, …).

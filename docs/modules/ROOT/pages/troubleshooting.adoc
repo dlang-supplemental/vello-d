@@ -1,0 +1,63 @@
+= Troubleshooting
+:navtitle: Troubleshooting
+
+Common pitfalls observed while building vello-d applications.
+
+== Scene memory growth
+
+**Symptom:** Memory climbs every frame.
+
+**Cause:** Appending draw commands without clearing the scene buffer.
+
+**Fix:** Call `scene.reset()` at the start of each frame before recording new primitives.
+
+== Invalid or null context
+
+**Symptom:** Blank window, `Context.valid` is false.
+
+**Causes:**
+
+* Surface creation failed (unsupported backend, zero width/height).
+* Missing platform constructor (e.g. Wayland path on X11-only session).
+* `wgpu` adapter or device request failed.
+
+**Fix:** Check `ctx.valid` after construction. Pin `VelloBackend.Vulkan` or `VelloBackend.Dx12` if `All` picks an unsupported adapter.
+
+== Text returns zero advance / draws nothing
+
+**Symptom:** `drawText` / `measureText` return `0`.
+
+**Checks:**
+
+* Font bytes must be a loadable TrueType/OpenType buffer (`FontRef::from_index`).
+* Text must be valid UTF-8.
+* Code points absent from the font cmap are skipped — try a font with broader coverage.
+* Empty font or text slices short-circuit to `0` on the D side.
+
+Complex scripts need external shaping; use xref:text-rendering.adoc#drawglyphs-manual-glyph-runs[drawGlyphs] instead.
+
+[[gpu-warmup]]
+== GPU warmup / white screen (DX12)
+
+**Symptom:** Long white window on first launch; Windows marks the app "Not responding."
+
+**Cause:** DX12 shader pipeline compilation can take 10+ seconds on first use.
+
+**Mitigations:**
+
+* Run rendering on a background thread (`demos` `-c threaded`).
+* Show the window immediately and paint a lightweight native loading message until the render thread signals ready (see `TUTORIAL.md` GDI splash pattern).
+* Interleave `glfwPollEvents()` during sequential context startup on the main thread.
+
+== Windows DLL / link errors
+
+**Symptom:** Unresolved externals when linking demos or your app.
+
+**Fix:** Ensure `vello_bridge` is built (`cargo build --release`) and link flags include:
+
+* Library path: `vello_bridge/target/release`
+* Libraries: `vello_bridge` plus Windows system libs listed in `dub.sdl` / `demos/dub.json`
+
+== Staging texture / format mismatch
+
+Vello renders to an internal `Rgba8Unorm` target, then copies to the swapchain when formats differ. If you extend the bridge, keep that blit path when the surface prefers `Bgra8UnormSrgb` — details in `vello_bridge/LESSONS.md`.

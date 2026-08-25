@@ -1,0 +1,29 @@
+= 2026-08-17 — Scene API, Linux surfaces
+:navtitle: 2026-08-17 (scene API)
+:page-date: 2026-08-17
+
+== Summary
+
+Expanded the Rust C ABI and D wrappers for vector scene recording and cross-platform surface creation.
+
+== Scene recording (C ABI + D wrappers)
+
+* Paths: begin/move/line/quad/cubic/close, fill and stroke
+* Primitives: rounded rects, circles, lines
+* Fills: solid, linear gradient, radial gradient
+* Clipping: push clip rect, pop layer
+* Images: RGBA8 unpremultiplied blits
+
+D-side helpers include `Scene.fillRoundedRect`, `fillLinearRect`, `drawImage`, etc.
+
+== Surface constructors
+
+* `vello_context_new_for_x11` / `Context.forX11`
+* `vello_context_new_for_wayland` / `Context.forWayland`
+* Windows `HWND` constructor unchanged
+
+Missing platform support returns null handles (`Context.valid == false`).
+
+== Documentation
+
+Public overview remains in xref:../scene-api.adoc[Scene API] and xref:../quick-start.adoc[Quick start].

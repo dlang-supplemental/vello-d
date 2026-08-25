@@ -1,0 +1,80 @@
+= Quick start
+:navtitle: Quick start
+
+== 1. Build the Rust bridge
+
+Vello is a Rust engine; the D package links against a static library built from `vello_bridge/`.
+
+[source,powershell]
+----
+cd vello_bridge
+cargo build --release
+----
+
+On Windows, `dub build` runs the same `cargo build` via `preBuildCommands` in `dub.sdl`.
+
+== 2. Add the dependency
+
+[source,bash]
+----
+dub add vello-d
+----
+
+For local development, depend on a path checkout instead of the registry.
+
+== 3. Minimal render loop
+
+[source,d]
+----
+import vello;
+import glfw3.api;
+
+extern (C) void* glfwGetWin32Window(void* window);
+
+void main()
+{
+    glfwInit();
+    scope (exit) glfwTerminate();
+
+    glfwWindowHint(0x00022001, 0x00022006); // CLIENT_API, NO_API
+    auto window = glfwCreateWindow(800, 600, "Vello-D", null, null);
+    auto hwnd = glfwGetWin32Window(window);
+    auto hinst = GetModuleHandleA(null);
+
+    initVello();
+    auto ctx = new Context(hwnd, hinst, 800, 600);
+    auto scene = new Scene();
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        int w, h;
+        glfwGetFramebufferSize(window, &w, &h);
+        ctx.resize(cast(uint) w, cast(uint) h);
+
+        scene.reset();
+        scene.clear(Color(0.1f, 0.1f, 0.2f, 1.0f));
+        scene.fillRect(50, 50, 200, 200, 255, 0, 0);
+        ctx.render(scene);
+    }
+}
+----
+
+== Linux surfaces
+
+Instead of the HWND constructor, use factory methods on `Context`:
+
+[source,d]
+----
+// X11: display is Display*, window is the XID
+auto ctx = Context.forX11(display, windowId, screen, width, height);
+
+// Wayland: display is wl_display*, surface is wl_surface*
+auto ctx = Context.forWayland(display, surface, width, height);
+----
+
+Missing platform constructors return a context with `valid == false`.
+
+== Frame discipline
+
+Always call `scene.reset()` at the start of each frame. The scene is a command buffer, not a persistent canvas — appending without resetting grows memory without bound.

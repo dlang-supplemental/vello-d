@@ -1,6 +1,5 @@
 # Dlang
 .dub/
-docs/
 *.exe
 *.dll
 *.lib
