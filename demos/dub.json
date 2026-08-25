@@ -24,5 +24,15 @@
         }
     ],
     "lflags": ["/LIBPATH:../vello_bridge/target/release"],
-    "libs": ["vello_bridge"]
+    "libs": [
+        "vello_bridge",
+        "advapi32",
+        "userenv",
+        "ws2_32",
+        "bcrypt",
+        "ntdll",
+        "kernel32",
+        "shell32",
+        "ole32"
+    ]
 }

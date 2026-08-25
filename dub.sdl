@@ -16,7 +16,8 @@ sourcePaths "source"
 
 platform "windows" {
     lflags "/LIBPATH:$PACKAGE_DIR/vello_bridge/target/release"
-    libs "vello_bridge" "advapi32" "userenv" "ws2_32" "bcrypt" "ntdll"
+    # System libs required by the Rust staticlib (std / wgpu); keep demos in sync.
+    libs "vello_bridge" "advapi32" "userenv" "ws2_32" "bcrypt" "ntdll" "kernel32" "shell32" "ole32"
 }
 
 platform "posix" {
