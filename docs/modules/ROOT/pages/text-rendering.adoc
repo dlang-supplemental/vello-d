@@ -1,0 +1,98 @@
+= Text rendering
+:navtitle: Text rendering
+
+vello-d exposes two levels of text support:
+
+. **Low-level glyph runs** — you supply glyph ids and per-glyph offsets (`drawGlyphs`).
+. **UTF-8 helpers** — shape left-to-right text with skrifa cmap + advances (`drawText`, `measureText`).
+
+Both record **outline glyphs** through Vello's `draw_glyphs` path (not a separate text atlas).
+
+== drawGlyphs — manual glyph runs
+
+Use when you already have shaped glyphs (from HarfBuzz, a game UI stack, etc.).
+
+[source,d]
+----
+import vello;
+
+VelloGlyph[] glyphs = [
+    VelloGlyph(72, 0.0f, 0.0f),   // 'H'
+    VelloGlyph(101, 10.0f, 0.0f), // 'e'
+    // ...
+];
+
+ubyte[] fontBytes = /* read .ttf/.otf into memory */;
+scene.drawGlyphs(fontBytes, 0, 48.0f, 100.0, 200.0, 255, 255, 255, 255, glyphs);
+----
+
+* `fontIndex` — font face index inside a TrueType/OpenType collection (usually `0`).
+* `fontSize` — size in pixels; values below `1` are clamped to `1` on the Rust side.
+* `(tx, ty)` — baseline origin in scene coordinates.
+* `glyphs[i].x/y` — offsets **from** `(tx, ty)` before the scene transform is applied.
+
+== drawText — UTF-8 LTR shaping
+
+[source,d]
+----
+import vello;
+
+ubyte[] fontBytes = /* .ttf bytes */;
+const text = "Hello, Vello-D!";
+float advance = scene.drawText(fontBytes, 0, 32.0f, 40.0, 120.0, 255, 255, 255, 255, text);
+// advance == horizontal width in pixels (same units as fontSize)
+----
+
+Implementation (Rust `vello_scene_draw_text`):
+
+. Validates UTF-8 input; invalid UTF-8 returns `0`.
+. Maps each scalar with skrifa `charmap` (simple LTR; no bidi or OpenType features).
+. Unmapped code points are skipped (no placeholder glyph).
+. Builds a `VelloGlyph` run with cumulative `advance_width` pen positions.
+. Delegates to `vello_scene_draw_glyphs` and returns total advance width.
+
+Constraints:
+
+* **LTR only** — no right-to-left or vertical layout.
+* **No kerning/features** — advances come from default glyph metrics, not GPOS/GSUB.
+* **Font must load** — bad bytes or index return `0` and draw nothing.
+* **Empty input** — empty font bytes or text returns `0` without recording.
+
+== measureText — width without drawing
+
+[source,d]
+----
+float width = measureText(fontBytes, 0, 32.0f, "Hello, Vello-D!");
+----
+
+Uses the same shaping rules as `drawText` but does not touch the scene. Useful for centering labels or reserving layout space before recording.
+
+== C ABI reference
+
+[source,c]
+----
+float vello_scene_draw_text(
+    VelloScene* scene,
+    const uint8_t* fontBytes, size_t fontLen, uint32_t fontIndex,
+    float fontSize, double tx, double ty,
+    uint8_t r, uint8_t g, uint8_t b, uint8_t a,
+    const uint8_t* textUtf8, size_t textLen);
+
+float vello_measure_text(
+    const uint8_t* fontBytes, size_t fontLen, uint32_t fontIndex,
+    float fontSize,
+    const uint8_t* textUtf8, size_t textLen);
+----
+
+== When to use which API
+
+[cols="1,1,2",options="header"]
+|===
+| API | Recording | Best for
+
+| `drawGlyphs` | Yes | Pre-shaped runs, custom shapers, icon fonts with explicit ids
+| `drawText` | Yes | Simple English/UTF-8 labels without a shaping stack
+| `measureText` | No | Layout / alignment before draw
+|===
+
+For production typography (Arabic, Indic scripts, ligatures, kerning), shape with HarfBuzz (or similar) and pass the result through `drawGlyphs`.

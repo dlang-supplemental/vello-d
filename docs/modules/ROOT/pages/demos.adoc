@@ -1,0 +1,35 @@
+= Demos
+:navtitle: Demos
+
+Sample GLFW executables live under `demos/`. Build the Rust bridge first (`vello_bridge/target/release`).
+
+[source,powershell]
+----
+cd demos
+dub build -c simple
+dub run -c threaded
+----
+
+[cols="1,2,3",options="header"]
+|===
+| Configuration | Command | Description
+
+| Simple | `dub run -c simple` | Single-window Vulkan renderer with animated fills
+| Multi-backend | `dub run -c multi` | Vulkan + DX12 windows on the main thread
+| Threaded | `dub run -c threaded` | Vulkan + DX12 on background threads (**recommended on Windows**)
+|===
+
+== Why threaded rendering?
+
+On Windows, a single-threaded loop (`glfwPollEvents` on the main thread) blocks while the user moves or resizes a window. The `threaded` configuration gives each window its own render thread so animation stays smooth during drags.
+
+The threaded demo also uses a short **GDI splash** ("Compiling shaders…") while DX12 warms up — see xref:troubleshooting.adoc#gpu-warmup[Troubleshooting].
+
+== Windows link flags
+
+Demos link the same system libraries as `dub.sdl` (`ntdll`, `userenv`, `advapi32`, …). Keep `demos/dub.json` in sync when the bridge adds Windows deps.
+
+== Further reading
+
+* https://github.com/dlang-supplemental/vello-d/blob/main/TUTORIAL.md[TUTORIAL.md] — step-by-step recreation of the threaded multi-backend demo
+* link:../source/vello/LESSONS.md[D-side lessons] and link:../vello_bridge/LESSONS.md[Rust-side lessons] in the repository

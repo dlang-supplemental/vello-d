@@ -1,0 +1,46 @@
+= Scene API
+:navtitle: Scene API
+
+The `Scene` class wraps the Rust-side command buffer. Primitives honor the current affine transform (`setTransform` / `resetTransform`).
+
+== Primitives
+
+[cols="1,2",options="header"]
+|===
+| Method | Notes
+
+| `clear(Color)` | Full-frame background via an oversized fill
+| `fillRect`, `fillRoundedRect`, `strokeRect` | Axis-aligned rectangles
+| `fillCircle`, `strokeLine` | Circle and line segments
+| `fillLinearRect`, `fillRadialRect` | Two-stop gradients inside a rect
+| `pushClipRect` / `popLayer` | Rectangular clip; pair every push with a pop
+|===
+
+== Paths
+
+[source,d]
+----
+scene.beginPath();
+scene.moveTo(100, 100);
+scene.quadTo(200, 50, 300, 100);
+scene.cubicTo(350, 150, 250, 200, 200, 150);
+scene.closePath();
+scene.fillPath(255, 128, 0);
+scene.strokePath(2.0, 255, 255, 255);
+----
+
+== Images
+
+`drawImage(x, y, dstW, dstH, srcW, srcH, pixels)` expects RGBA8 **unpremultiplied** pixels in row-major order (`srcW * srcH * 4` bytes). Empty slices or zero dimensions are ignored.
+
+== Context
+
+`Context` owns the `wgpu` surface and renderer. Call `resize` when the framebuffer changes, then `render(scene)` to present.
+
+Backend selection uses `VelloBackend` (`All`, `Vulkan`, `Dx12`, …) at construction time.
+
+== C ABI
+
+Low-level symbols live in `vello.bindings` (`extern(C)`). The D wrappers in `vello` convert colors to 0–255 byte channels and manage RAII for handles.
+
+See xref:text-rendering.adoc[Text rendering] for glyph runs and UTF-8 helpers added in 0.1.4.

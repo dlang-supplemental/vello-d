@@ -1,0 +1,35 @@
+= 2026-08-25 — UTF-8 draw_text / measure_text (0.1.4)
+:navtitle: 2026-08-25 (0.1.4)
+:page-date: 2026-08-25
+
+== Summary
+
+Adds UTF-8 text shaping and measurement on top of the existing glyph-run API. Package version bumped to **0.1.4**.
+
+== C ABI
+
+* `vello_scene_draw_text` — shape LTR UTF-8 via skrifa cmap + advance widths, record outline glyphs, return advance width in pixels.
+* `vello_measure_text` — same shaping without scene recording.
+
+== D API
+
+* `Scene.drawText(fontBytes, fontIndex, fontSize, tx, ty, r, g, b, a, text)` → `float` advance width.
+* `measureText(fontBytes, fontIndex, fontSize, text)` → `float` advance width.
+
+== Implementation notes
+
+* Depends on `skrifa` in `vello_bridge` for cmap mapping and glyph metrics.
+* Invalid UTF-8, unloadable fonts, or empty input return `0` and draw nothing.
+* Unmapped code points are skipped (no tofu glyph).
+* No bidi, kerning, or OpenType feature processing — see xref:../text-rendering.adoc[Text rendering] for constraints.
+
+== Other
+
+* Windows demo link fix: pass `ntdll` / `userenv` system libs (keep `demos/dub.json` aligned with `dub.sdl`).
+* Ignore local `_run/` scratch directory.
+
+== Files touched
+
+* `vello_bridge/src/lib.rs`, `vello_bridge/Cargo.toml`
+* `source/vello/bindings.d`, `source/vello/package.d`
+* `dub.sdl` (version 0.1.4)

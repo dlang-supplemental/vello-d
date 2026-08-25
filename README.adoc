@@ -1,0 +1,146 @@
+ifndef::env-github[:icons: font]
+:toc: preamble
+:toclevels: 2
+:sectanchors:
+
+ifdef::env-github[]
+++++
+<div align="center">
+  <a href="https://github.com/dlang-supplemental/vello-d/actions/workflows/build.yml"><img src="https://github.com/dlang-supplemental/vello-d/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://dlang-supplemental.github.io/docs/vello-d/index.html"><img src="https://img.shields.io/badge/docs-DLang%20Supplemental-22c55e?style=for-the-badge" alt="Docs"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/graphs/contributors"><img src="https://img.shields.io/github/contributors/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Contributors"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/network/members"><img src="https://img.shields.io/github/forks/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Forks"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/stargazers"><img src="https://img.shields.io/github/stars/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Stargazers"></a>
+  <a href="https://github.com/dlang-supplemental/vello-d/issues"><img src="https://img.shields.io/github/issues/dlang-supplemental/vello-d.svg?style=for-the-badge" alt="Issues"></a>
+
+  <h1 align="center">vello-d</h1>
+
+  <p align="center">
+    High-performance, GPU-accelerated 2D vector graphics for D, powered by Vello (Rust).
+    <br /><br />
+    <a href="https://dlang-supplemental.github.io/docs/vello-d/index.html">Explore the docs</a>
+    &middot;
+    <a href="https://github.com/dlang-supplemental/vello-d/issues">Report Bug</a>
+    &middot;
+    <a href="https://github.com/dlang-supplemental/vello-d/issues">Request Feature</a>
+  </p>
+</div>
+++++
+endif::[]
+
+ifndef::env-github[]
+image:https://github.com/dlang-supplemental/vello-d/actions/workflows/build.yml/badge.svg[Build,link=https://github.com/dlang-supplemental/vello-d/actions/workflows/build.yml]
+image:https://img.shields.io/badge/docs-DLang%20Supplemental-22c55e?style=for-the-badge[Docs,link=https://dlang-supplemental.github.io/docs/vello-d/index.html]
+image:https://img.shields.io/github/contributors/dlang-supplemental/vello-d.svg?style=for-the-badge[Contributors,link=https://github.com/dlang-supplemental/vello-d/graphs/contributors]
+image:https://img.shields.io/github/forks/dlang-supplemental/vello-d.svg?style=for-the-badge[Forks,link=https://github.com/dlang-supplemental/vello-d/network/members]
+image:https://img.shields.io/github/stars/dlang-supplemental/vello-d.svg?style=for-the-badge[Stars,link=https://github.com/dlang-supplemental/vello-d/stargazers]
+image:https://img.shields.io/github/issues/dlang-supplemental/vello-d.svg?style=for-the-badge[Issues,link=https://github.com/dlang-supplemental/vello-d/issues]
+
+= vello-d
+
+High-performance, GPU-accelerated 2D vector graphics for D, powered by link:https://github.com/linebender/vello[Vello] (Rust).
+
+link:https://dlang-supplemental.github.io/docs/vello-d/index.html[Explore the docs] ·
+link:https://github.com/dlang-supplemental/vello-d/issues[Report Bug] ·
+link:https://github.com/dlang-supplemental/vello-d/issues[Request Feature]
+endif::[]
+
+Install: `dub add vello-d` (after building the Rust bridge below).
+
+== About The Project
+
+=== Key Features
+
+* **GPU Backends**: Native support for **Vulkan** and **DX12** via `wgpu`.
+* **Surfaces**: Windows `HWND`, X11 (`Display*` + window id), Wayland (`wl_display*` + `wl_surface*`).
+* **Scene API**: fills, strokes, rounded rects, circles, Bézier paths, clip layers, linear/radial gradients, RGBA8 images, TrueType glyph runs, UTF-8 text (`drawText` / `measureText`).
+* **Multi-Window Rendering**: Create multiple windows running on different GPU backends within a single process.
+* **Threaded Rendering**: Decouple render loops from the Win32 message pump during move/resize.
+* **RAII Bindings**: Ergonomic D wrappers for Vello's scene and context management.
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+
+== Getting Started
+
+=== 1. Build the Rust Bridge
+
+Vello is a Rust engine, so you first need to build the C-compatible bridge:
+
+[source,powershell]
+----
+cd vello_bridge
+cargo build --release
+----
+
+Full walkthrough: link:https://dlang-supplemental.github.io/docs/vello-d/quick-start.html[Quick start].
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+
+== Usage
+
+The `demos/` directory contains several configurations:
+
+[cols="1,2,3",options="header"]
+|===
+| Configuration | Command | Description
+
+| **Simple** | `dub run -c simple` | A basic single-window Vulkan renderer.
+| **Multi-Backend** | `dub run -c multi` | **Vulkan + DX12** windows in one process (shared main thread).
+| **Threaded** | `dub run -c threaded` | **Vulkan + DX12** on background threads. **Highly recommended on Windows.**
+|===
+
+=== Text rendering (0.1.4+)
+
+[source,d]
+----
+ubyte[] font = /* load .ttf */;
+float w = scene.drawText(font, 0, 32.0f, 40.0, 120.0, 255, 255, 255, 255, "Hello!");
+----
+
+See link:https://dlang-supplemental.github.io/docs/vello-d/text-rendering.html[Text rendering] for `drawGlyphs`, constraints, and C ABI details.
+
+=== Why Threaded Rendering?
+
+On Windows, standard single-threaded main loops block when a user moves or resizes a window. The `-c threaded` configuration keeps animation smooth during drags.
+
+=== Documentation
+
+* link:https://dlang-supplemental.github.io/docs/vello-d/index.html[Antora docs] (scene API, demos, troubleshooting, changelog)
+* link:source/vello/LESSONS.md[Dlang lessons learned] — FFI safety and RAII
+* link:vello_bridge/LESSONS.md[Rust lessons learned] — `wgpu` feature selection and cross-adapter compatibility
+* link:TUTORIAL.md[TUTORIAL.md] — recreate the threaded multi-backend demo
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+
+== Changelog
+
+See link:CHANGELOG.adoc[CHANGELOG.adoc] and the link:https://dlang-supplemental.github.io/docs/vello-d/changelog.html[docs changelog index].
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+
+== License
+
+MIT / Apache 2.0
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+
+== Contact
+
+DLang Supplemental — dlang@devcentr.org
+
+* Project: https://github.com/dlang-supplemental/vello-d
+* Site: https://dlang-supplemental.github.io
+
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++

@@ -1,0 +1,33 @@
+= vello-d
+:navtitle: Introduction
+
+High-performance, GPU-accelerated 2D vector graphics for D, powered by
+https://github.com/linebender/vello[Vello] (Rust) through a C ABI bridge.
+
+== Links
+
+* https://github.com/dlang-supplemental/vello-d[Repository]
+* https://github.com/dlang-supplemental/vello-d/releases[Releases]
+* https://github.com/dlang-supplemental/vello-d/blob/main/TUTORIAL.md[Threaded demo tutorial]
+
+== Requirements
+
+* D compiler (`ldc2` recommended) and https://dub.pm/[dub]
+* Rust toolchain (`cargo`) to build `vello_bridge/`
+* Windows (primary), or Linux with X11/Wayland surface constructors
+
+Install: `dub add vello-d` (after building the Rust bridge — see xref:quick-start.adoc[Quick start]).
+
+== Key features
+
+* **GPU backends** — Vulkan and DX12 via `wgpu`; backend can be pinned per context.
+* **Surfaces** — Windows `HWND`, X11 (`Display*` + window id), Wayland (`wl_display*` + `wl_surface*`).
+* **Scene API** — fills, strokes, rounded rects, circles, Bézier paths, clip layers, linear/radial gradients, RGBA8 images, TrueType glyph runs, UTF-8 text shaping.
+* **Multi-window** — multiple contexts on different backends in one process.
+* **Threaded rendering** — decouple render loops from the Win32 message pump during move/resize.
+
+== Package layout
+
+* `source/vello/` — D RAII wrappers (`Context`, `Scene`, `Color`)
+* `vello_bridge/` — Rust staticlib exporting the C ABI
+* `demos/` — GLFW sample executables (`simple`, `multi`, `threaded`)

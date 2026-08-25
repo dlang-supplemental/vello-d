@@ -1,0 +1,24 @@
+= 2026-08-18 — Outline glyph runs, wgpu 24 adapter Result
+:navtitle: 2026-08-18 (glyph runs)
+:page-date: 2026-08-18
+
+== Summary
+
+First-class TrueType/OpenType outline glyph recording through the C ABI, plus wgpu 24 compatibility fixes.
+
+== C ABI
+
+* `vello_scene_draw_glyphs` — record a glyph run from in-memory `FontData` plus `VelloGlyph` id/x/y offsets.
+
+== D API
+
+* `Scene.drawGlyphs(...)` — wraps the C ABI with slice guards for empty font/glyph input.
+
+== wgpu / Vello updates
+
+* `request_adapter` matches wgpu 24 (`Result` instead of `Option`).
+* `draw_image` passes `ImageBrush` by reference as required by Vello 0.8.
+
+== Usage
+
+See xref:../text-rendering.adoc#drawglyphs-manual-glyph-runs[drawGlyphs] for parameters and coordinate semantics.

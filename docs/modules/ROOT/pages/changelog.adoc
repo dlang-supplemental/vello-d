@@ -1,0 +1,12 @@
+= Changelog
+:navtitle: Changelog
+
+Release notes for vello-d. Each entry links to a detail page.
+
+== Entries
+
+* xref:changelog-details/2026-08-25-0.1.4.adoc[2026-08-25 — UTF-8 draw_text / measure_text (0.1.4)] — skrifa-based LTR UTF-8 shaping; `Scene.drawText`, `measureText`; package 0.1.4.
+* xref:changelog-details/2026-08-18-glyph-runs.adoc[2026-08-18 — Outline glyph runs, wgpu 24 adapter Result] — `vello_scene_draw_glyphs`, `Scene.drawGlyphs`; wgpu 24 `request_adapter` returns `Result`.
+* xref:changelog-details/2026-08-17-scene-api.adoc[2026-08-17 — Scene API, Linux surfaces] — path/stroke/clip/gradient/image C ABI; X11 and Wayland surface constructors.
+
+The repository root link:https://github.com/dlang-supplemental/vello-d/blob/main/CHANGELOG.adoc[CHANGELOG.adoc] mirrors summaries for package consumers.
