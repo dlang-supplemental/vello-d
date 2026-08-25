@@ -22,3 +22,6 @@ vello_bridge/Cargo.lock
 *.log
 demos/build_err.txt
 MEMORIES.md
+
+_run/
+

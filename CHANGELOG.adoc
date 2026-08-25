@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-25 — UTF-8 draw_text / measure_text (0.1.4)
+
+C ABI `vello_scene_draw_text` and `vello_measure_text` shape LTR UTF-8 via skrifa cmap + advances, then record outline glyphs. D wrappers: `Scene.drawText`, `measureText`. Package version `0.1.4`.
+
 == 2026-08-18 — Outline glyph runs, wgpu 24 adapter Result
 
 C ABI `vello_scene_draw_glyphs` records a TrueType glyph run (`FontData` blob + `vello::Glyph` x/y offsets). D wrapper: `Scene.drawGlyphs`. `request_adapter` matches wgpu 24 (`Result` instead of `Option`). `draw_image` passes `ImageBrush` by reference as required by Vello 0.8.

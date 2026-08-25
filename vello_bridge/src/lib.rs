@@ -782,3 +782,112 @@ pub unsafe extern "C" fn vello_scene_draw_glyphs(
         .brush(color_rgba(r, g, b, a))
         .draw(Fill::NonZero, iter);
 }
+
+/// Shape UTF-8 (simple LTR cmap + advances via skrifa) and draw outline glyphs.
+/// Returns the advance width in pixels, or 0 on failure / empty text.
+#[no_mangle]
+pub unsafe extern "C" fn vello_scene_draw_text(
+    scene: *mut VelloSceneHost,
+    font_bytes: *const u8,
+    font_len: usize,
+    font_index: u32,
+    font_size: f32,
+    tx: f64,
+    ty: f64,
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8,
+    text_utf8: *const u8,
+    text_len: usize,
+) -> f32 {
+    if scene.is_null()
+        || font_bytes.is_null()
+        || font_len == 0
+        || text_utf8.is_null()
+        || text_len == 0
+    {
+        return 0.0;
+    }
+    let bytes = std::slice::from_raw_parts(font_bytes, font_len);
+    let text_bytes = std::slice::from_raw_parts(text_utf8, text_len);
+    let Ok(text) = std::str::from_utf8(text_bytes) else {
+        return 0.0;
+    };
+    let Ok(font_ref) = skrifa::FontRef::from_index(bytes, font_index) else {
+        return 0.0;
+    };
+    use skrifa::instance::{LocationRef, Size};
+    use skrifa::MetadataProvider;
+    let size = Size::new(font_size.max(1.0));
+    let charmap = font_ref.charmap();
+    let metrics = font_ref.glyph_metrics(size, LocationRef::default());
+    let mut pen_x = 0.0f32;
+    let mut glyphs: Vec<VelloGlyph> = Vec::with_capacity(text.chars().count());
+    for ch in text.chars() {
+        let Some(gid) = charmap.map(ch) else {
+            continue;
+        };
+        glyphs.push(VelloGlyph {
+            id: gid.to_u32(),
+            x: pen_x,
+            y: 0.0,
+        });
+        pen_x += metrics.advance_width(gid).unwrap_or(0.0);
+    }
+    if glyphs.is_empty() {
+        return 0.0;
+    }
+    vello_scene_draw_glyphs(
+        scene,
+        font_bytes,
+        font_len,
+        font_index,
+        font_size,
+        tx,
+        ty,
+        r,
+        g,
+        b,
+        a,
+        glyphs.as_ptr(),
+        glyphs.len(),
+    );
+    pen_x
+}
+
+/// Measure UTF-8 advance width without recording into the scene.
+#[no_mangle]
+pub unsafe extern "C" fn vello_measure_text(
+    font_bytes: *const u8,
+    font_len: usize,
+    font_index: u32,
+    font_size: f32,
+    text_utf8: *const u8,
+    text_len: usize,
+) -> f32 {
+    if font_bytes.is_null() || font_len == 0 || text_utf8.is_null() || text_len == 0 {
+        return 0.0;
+    }
+    let bytes = std::slice::from_raw_parts(font_bytes, font_len);
+    let text_bytes = std::slice::from_raw_parts(text_utf8, text_len);
+    let Ok(text) = std::str::from_utf8(text_bytes) else {
+        return 0.0;
+    };
+    let Ok(font_ref) = skrifa::FontRef::from_index(bytes, font_index) else {
+        return 0.0;
+    };
+    use skrifa::instance::{LocationRef, Size};
+    use skrifa::MetadataProvider;
+    let size = Size::new(font_size.max(1.0));
+    let charmap = font_ref.charmap();
+    let metrics = font_ref.glyph_metrics(size, LocationRef::default());
+    let mut pen_x = 0.0f32;
+    for ch in text.chars() {
+        let Some(gid) = charmap.map(ch) else {
+            continue;
+        };
+        pen_x += metrics.advance_width(gid).unwrap_or(0.0);
+    }
+    pen_x
+}

@@ -105,4 +105,20 @@ extern (C) {
         ubyte r, ubyte g, ubyte b, ubyte a,
         const(VelloGlyph)* glyphs, size_t glyphCount
     );
+
+    /// Shape UTF-8 (LTR cmap) and draw; returns advance width in px.
+    float vello_scene_draw_text(
+        VelloScene* scene,
+        const(ubyte)* fontBytes, size_t fontLen, uint fontIndex,
+        float fontSize, double tx, double ty,
+        ubyte r, ubyte g, ubyte b, ubyte a,
+        const(ubyte)* textUtf8, size_t textLen
+    );
+
+    /// Advance width only (no scene recording).
+    float vello_measure_text(
+        const(ubyte)* fontBytes, size_t fontLen, uint fontIndex,
+        float fontSize,
+        const(ubyte)* textUtf8, size_t textLen
+    );
 }
